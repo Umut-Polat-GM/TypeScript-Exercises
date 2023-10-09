@@ -544,146 +544,228 @@ const myState = new StateObject<(string | number | boolean)[]>([15]);
 myState.state = ["Dave", 42, true];
 console.log(myState.state);
 ```
+
 ## Chapter09 Notes
 
 ### Utility Types
 
 ```ts
-// Utility Types 
+// Utility Types
 
-// Partial 
+// Partial
 
 interface Assignment {
-    studentId: string,
-    title: string,
-    grade: number,
-    verified?: boolean,
+  studentId: string;
+  title: string;
+  grade: number;
+  verified?: boolean;
 }
 
-const updateAssignment = (assign: Assignment, propsToUpdate: Partial<Assignment>): Assignment => {
-    return { ...assign, ...propsToUpdate }
-}
+const updateAssignment = (
+  assign: Assignment,
+  propsToUpdate: Partial<Assignment>
+): Assignment => {
+  return { ...assign, ...propsToUpdate };
+};
 
 const assign1: Assignment = {
-    studentId: "compsci123",
-    title: "Final Project",
-    grade: 0,
-}
+  studentId: "compsci123",
+  title: "Final Project",
+  grade: 0,
+};
 
-console.log(updateAssignment(assign1, { grade: 95 }))
-const assignGraded: Assignment = updateAssignment(assign1, { grade: 95 })
+console.log(updateAssignment(assign1, { grade: 95 }));
+const assignGraded: Assignment = updateAssignment(assign1, { grade: 95 });
 
-
-// Required and Readonly 
+// Required and Readonly
 
 const recordAssignment = (assign: Required<Assignment>): Assignment => {
-    // send to database, etc. 
-    return assign
-}
+  // send to database, etc.
+  return assign;
+};
 
-const assignVerified: Readonly<Assignment> = { ...assignGraded, verified: true }
+const assignVerified: Readonly<Assignment> = {
+  ...assignGraded,
+  verified: true,
+};
 
 // NOTE: assignVerified won't work with recordAssignment!
 // Why? Try it and see what TS tells you :)
 
-recordAssignment({ ...assignGraded, verified: true })
+recordAssignment({ ...assignGraded, verified: true });
 
-// Record 
+// Record
 const hexColorMap: Record<string, string> = {
-    red: "FF0000",
-    green: "00FF00",
-    blue: "0000FF",
-}
+  red: "FF0000",
+  green: "00FF00",
+  blue: "0000FF",
+};
 
-type Students = "Sara" | "Kelly"
-type LetterGrades = "A" | "B" | "C" | "D" | "U"
+type Students = "Sara" | "Kelly";
+type LetterGrades = "A" | "B" | "C" | "D" | "U";
 
 const finalGrades: Record<Students, LetterGrades> = {
-    Sara: "B",
-    Kelly: "U"
-}
+  Sara: "B",
+  Kelly: "U",
+};
 
 interface Grades {
-    assign1: number,
-    assign2: number,
+  assign1: number;
+  assign2: number;
 }
 
 const gradeData: Record<Students, Grades> = {
-    Sara: { assign1: 85, assign2: 93 },
-    Kelly: { assign1: 76, assign2: 15 },
-}
+  Sara: { assign1: 85, assign2: 93 },
+  Kelly: { assign1: 76, assign2: 15 },
+};
 
-// Pick and Omit 
+// Pick and Omit
 
-type AssignResult = Pick<Assignment, "studentId" | "grade">
+type AssignResult = Pick<Assignment, "studentId" | "grade">;
 
 const score: AssignResult = {
-    studentId: "k123",
-    grade: 85,
-}
+  studentId: "k123",
+  grade: 85,
+};
 
-type AssignPreview = Omit<Assignment, "grade" | "verified">
+type AssignPreview = Omit<Assignment, "grade" | "verified">;
 
 const preview: AssignPreview = {
-    studentId: "k123",
-    title: "Final Project",
-}
+  studentId: "k123",
+  title: "Final Project",
+};
 
-// Exclude and Extract 
+// Exclude and Extract
 
-type adjustedGrade = Exclude<LetterGrades, "U">
+type adjustedGrade = Exclude<LetterGrades, "U">;
 
-type highGrades = Extract<LetterGrades, "A" | "B">
+type highGrades = Extract<LetterGrades, "A" | "B">;
 
-// Nonnullable 
+// Nonnullable
 
-type AllPossibleGrades = 'Dave' | 'John' | null | undefined
-type NamesOnly = NonNullable<AllPossibleGrades>
+type AllPossibleGrades = "Dave" | "John" | null | undefined;
+type NamesOnly = NonNullable<AllPossibleGrades>;
 
-// ReturnType 
+// ReturnType
 
 //type newAssign = { title: string, points: number }
 
 const createNewAssign = (title: string, points: number) => {
-    return { title, points }
-}
+  return { title, points };
+};
 
-type NewAssign = ReturnType<typeof createNewAssign>
+type NewAssign = ReturnType<typeof createNewAssign>;
 
-const tsAssign: NewAssign = createNewAssign("Utility Types", 100)
-console.log(tsAssign)
+const tsAssign: NewAssign = createNewAssign("Utility Types", 100);
+console.log(tsAssign);
 
-// Parameters 
+// Parameters
 
-type AssignParams = Parameters<typeof createNewAssign>
+type AssignParams = Parameters<typeof createNewAssign>;
 
-const assignArgs: AssignParams = ["Generics", 100]
+const assignArgs: AssignParams = ["Generics", 100];
 
-const tsAssign2: NewAssign = createNewAssign(...assignArgs)
-console.log(tsAssign2)
+const tsAssign2: NewAssign = createNewAssign(...assignArgs);
+console.log(tsAssign2);
 
-// Awaited - helps us with the ReturnType of a Promise 
+// Awaited - helps us with the ReturnType of a Promise
 
 interface User {
-    id: number,
-    name: string,
-    username: string,
-    email: string,
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
 const fetchUsers = async (): Promise<User[]> => {
-
-    const data = await fetch(
-        'https://jsonplaceholder.typicode.com/users'
-    ).then(res => {
-        return res.json()
-    }).catch(err => {
-        if (err instanceof Error) console.log(err.message)
+  const data = await fetch("https://jsonplaceholder.typicode.com/users")
+    .then((res) => {
+      return res.json();
     })
-    return data
+    .catch((err) => {
+      if (err instanceof Error) console.log(err.message);
+    });
+  return data;
+};
+
+type FetchUsersReturnType = Awaited<ReturnType<typeof fetchUsers>>;
+
+fetchUsers().then((users) => console.log(users));
+```
+
+## Chapter14 Notes
+
+### useReducer
+
+```ts
+import { ReactNode, useReducer, ChangeEvent } from "react";
+
+const initialState = {
+  count: 0,
+  text: "",
+};
+
+const enum REDUCER_TYPES {
+  INCREMENT,
+  DECREMENT,
+  RESET,
+  SET_TEXT,
 }
 
-type FetchUsersReturnType = Awaited<ReturnType<typeof fetchUsers>>
+type ReducerAction = {
+  type: REDUCER_TYPES;
+  payload?: string;
+};
 
-fetchUsers().then(users => console.log(users))
+const reducer = (
+  state: typeof initialState,
+  action: ReducerAction
+): typeof initialState => {
+  switch (action.type) {
+    case REDUCER_TYPES.INCREMENT:
+      return { ...state, count: state.count + 1 };
+    case REDUCER_TYPES.DECREMENT:
+      return { ...state, count: state.count - 1 };
+    case REDUCER_TYPES.RESET:
+      return { ...state, count: 0 };
+    case REDUCER_TYPES.SET_TEXT:
+      return { ...state, text: action.payload ?? "" };
+    default:
+      throw new Error();
+  }
+};
+
+type ChildrenType = {
+  children: (num: number) => ReactNode;
+};
+
+const Counter = ({ children }: ChildrenType) => {
+  //   const [count, setCount] = useState<number>(0);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const Incresment = () => {
+    dispatch({ type: REDUCER_TYPES.INCREMENT });
+  };
+  const Decresment = () => {
+    dispatch({ type: REDUCER_TYPES.DECREMENT });
+  };
+  const ResetCount = () => {
+    dispatch({ type: REDUCER_TYPES.RESET });
+  };
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    dispatch({ type: REDUCER_TYPES.SET_TEXT, payload: e.target.value });
+  };
+  return (
+    <div>
+      <h3>{children(state.count)}</h3>
+      <button onClick={Incresment}>+</button>
+      <button onClick={Decresment}>-</button>
+      <button onClick={ResetCount}>Reset</button>
+      <br />
+      <input type="text" onChange={handleChange} />
+      <h4>{state.text}</h4>
+    </div>
+  );
+};
+
+export default Counter;
 ```
